@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guild War Guide — Where Winds Meet</title>
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --bg:       #1a1525;
+  --bg2:      #221d30;
+  --bg3:      #2d2540;
+  --bg4:      #362e50;
+  --gold:     #ffd166;
+  --coral:    #ff8a65;
+  --mint:     #06d6a0;
+  --red:      #e05252;
+  --amber:    #f4a261;
+  --blue:     #5ba3e8;
+  --purple:   #b39ddb;
+  --text:     #f5f0ff;
+  --text2:    #c8bfe8;
+  --muted:    #7b6fa0;
+  --border:   #3d3558;
+  --border2:  #4a4268;
+}
+
+/* ═══════════════════════════════════════════
+   RESET + BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Sidebar TOC ─────────────────────────── */
+.toc {
+  width: 220px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 28px 0 40px;
+  border-right: 1px solid var(--border);
+  background: var(--bg2);
+}
+.toc-brand {
+  padding: 0 18px 20px;
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+.toc a {
+  display: block;
+  padding: 5px 18px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  border-left: 2px solid transparent;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.toc a:hover    { color: var(--text); background: var(--bg3); }
+.toc a.active   { color: var(--gold); border-left-color: var(--gold); background: rgba(255,209,102,.06); }
+.toc .toc-group { padding: 12px 18px 4px; color: var(--muted); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* ── Main content ────────────────────────── */
+.content {
+  flex: 1;
+  min-width: 0;
+  padding: 0 0 80px;
+}
+
+/* ── Hero ────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #221d30 0%, #1a1525 60%);
+  border-bottom: 1px solid var(--border);
+  padding: 52px 48px 44px;
+}
+.hero-eyebrow {
+  color: var(--coral);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hero h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.hero h1 span { color: var(--gold); }
+.hero-sub {
+  color: var(--text2);
+  font-size: 0.9rem;
+  max-width: 560px;
+  margin-bottom: 24px;
+}
+.hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(255,209,102,.14);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 700;
+  transition: background .15s;
+}
+.btn-primary:hover { background: rgba(255,209,102,.24); }
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 600;
+  transition: background .15s;
+}
+.btn-secondary:hover { background: var(--bg4); }
+
+/* ═══════════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════════ */
+.section {
+  padding: 40px 48px;
+  border-bottom: 1px solid var(--border);
+}
+.section:last-child { border-bottom: none; }
+
+.section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.section p { color: var(--text2); margin-bottom: 14px; }
+
+/* ═══════════════════════════════════════════
+   CHECKLIST
+═══════════════════════════════════════════ */
+.checklist-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.checklist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+.checklist-header span { color: var(--gold); font-weight: 700; font-size: 0.84rem; }
+.reset-btn {
+  font-size: 0.74rem;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: color .15s;
+}
+.reset-btn:hover { color: var(--text); }
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .12s;
+}
+.check-item:last-child { border-bottom: none; }
+.check-item:hover { background: var(--bg3); }
+.check-item input[type="checkbox"] { display: none; }
+.check-box {
+  width: 18px; height: 18px;
+  border: 2px solid var(--border2);
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, border-color .15s;
+}
+.check-item input:checked ~ .check-box {
+  background: var(--mint);
+  border-color: var(--mint);
+}
+.check-item input:checked ~ .check-box::after {
+  content: '✓';
+  color: #0d1a14;
+  font-size: 11px;
+  font-weight: 900;
+}
+.check-text { color: var(--text2); font-size: 0.86rem; line-height: 1.5; }
+.check-item input:checked ~ .check-text { color: var(--muted); text-decoration: line-through; }
+.check-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 1px 7px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.tag-buff    { background: rgba(255,209,102,.15); color: var(--gold); }
+.tag-assign  { background: rgba(91,163,232,.15);  color: var(--blue); }
+.tag-equip   { background: rgba(6,214,160,.15);   color: var(--mint); }
+
+/* Progress bar */
+.check-progress {
+  height: 3px;
+  background: var(--bg3);
+}
+.check-progress-fill {
+  height: 100%;
+  background: var(--mint);
+  transition: width .3s ease;
+  border-radius: 0 3px 3px 0;
+}
+
+/* ═══════════════════════════════════════════
+   QUICK ANSWER
+═══════════════════════════════════════════ */
+.quick-answer {
+  background: rgba(255,209,102,.06);
+  border: 1px solid rgba(255,209,102,.25);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 10px 10px 0;
+  padding: 18px 22px;
+  margin-bottom: 18px;
+}
+.qa-label { color: var(--gold); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+.qa-text  { color: var(--text); font-size: 0.9rem; line-height: 1.7; }
+
+/* Win priority badges */
+.win-steps { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.win-step  {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px;
+}
+.win-num   { width: 24px; height: 24px; background: var(--gold); color: #1a1525; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; flex-shrink: 0; }
+.win-text  { color: var(--text2); font-size: 0.86rem; }
+.win-text strong { color: var(--text); }
+
+/* ═══════════════════════════════════════════
+   TABLES
+═══════════════════════════════════════════ */
+.table-wrap { overflow-x: auto; margin-bottom: 16px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+thead th {
+  text-align: left;
+  padding: 10px 14px;
+  color: var(--gold);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border2);
+  background: var(--bg2);
+}
+tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--bg3); }
+tbody td { padding: 10px 14px; color: var(--text2); vertical-align: top; }
+tbody td:first-child { color: var(--text); font-weight: 600; }
+.td-note { color: var(--muted); font-size: 0.8rem; }
+
+/* ═══════════════════════════════════════════
+   ROLE BADGES
+═══════════════════════════════════════════ */
+.badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 2px 3px 2px 0;
+}
+.badge-commander { background: rgba(255,209,102,.15); color: var(--gold); }
+.badge-tank      { background: rgba(91,163,232,.15);  color: var(--blue); }
+.badge-healer    { background: rgba(6,214,160,.15);   color: var(--mint); }
+.badge-dps       { background: rgba(224,82,82,.15);   color: var(--red);  }
+.badge-flex      { background: rgba(179,157,219,.15); color: var(--purple); }
+
+/* ═══════════════════════════════════════════
+   CALLOUT BOXES
+═══════════════════════════════════════════ */
+.callout {
+  border-left: 4px solid;
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+  margin: 14px 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.callout-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.callout-critical { border-color: var(--red);   background: rgba(224,82,82,.07);  }
+.callout-critical .callout-label { color: var(--red); }
+.callout-tip      { border-color: var(--mint);  background: rgba(6,214,160,.06);  }
+.callout-tip .callout-label { color: var(--mint); }
+.callout-warning  { border-color: var(--amber); background: rgba(244,162,97,.06); }
+.callout-warning .callout-label { color: var(--amber); }
+.callout-guild    { border-color: var(--coral); background: rgba(255,138,101,.07); }
+.callout-guild .callout-label { color: var(--coral); }
+.callout p { color: var(--text2); margin: 0; }
+
+/* ═══════════════════════════════════════════
+   PHASE CARDS
+═══════════════════════════════════════════ */
+.phases { display: flex; flex-direction: column; gap: 12px; }
+.phase-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--gold);
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+.phase-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+}
+.phase-num {
+  width: 32px; height: 32px;
+  background: var(--gold);
+  color: #1a1525;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 900;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.phase-title { color: var(--text); font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+.phase-timing { color: var(--muted); font-size: 0.75rem; margin-bottom: 6px; }
+.phase-now { color: var(--coral); font-size: 0.82rem; font-weight: 600; }
+
+details.phase-detail { border-top: 1px solid var(--border); }
+details.phase-detail summary {
+  padding: 10px 20px;
+  color: var(--gold);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  transition: background .12s;
+}
+details.phase-detail summary::before { content: '▶'; font-size: 0.65rem; transition: transform .2s; }
+details.phase-detail[open] summary::before { transform: rotate(90deg); }
+details.phase-detail summary:hover { background: var(--bg3); }
+details.phase-detail summary::-webkit-details-marker { display: none; }
+.phase-detail-body { padding: 12px 20px 18px; }
+.phase-detail-body ul  { padding-left: 18px; }
+.phase-detail-body li  { color: var(--text2); font-size: 0.86rem; margin-bottom: 7px; line-height: 1.6; }
+.phase-detail-body li strong { color: var(--text); }
+
+/* ═══════════════════════════════════════════
+   TIMELINE
+═══════════════════════════════════════════ */
+.timeline { position: relative; padding-left: 32px; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 11px; top: 8px; bottom: 8px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--gold), var(--coral), var(--red));
+  opacity: .3;
+}
+.tl-item {
+  position: relative;
+  margin-bottom: 20px;
+}
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -24px; top: 6px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--bg2);
+  border: 2px solid var(--border2);
+}
+.tl-item.tl-event::before { background: var(--gold); border-color: var(--gold); width: 14px; height: 14px; left: -25px; }
+.tl-item.tl-boss::before  { background: var(--coral); border-color: var(--coral); width: 14px; height: 14px; left: -25px; }
+.tl-item.tl-duel::before  { background: var(--red); border-color: var(--red); width: 16px; height: 16px; left: -26px; top: 4px; }
+
+.tl-time  { font-size: 0.72rem; color: var(--muted); font-weight: 600; letter-spacing: 0.08em; margin-bottom: 2px; }
+.tl-title { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.tl-body  { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
+.tl-body strong { color: var(--coral); }
+
+/* ═══════════════════════════════════════════
+   COMBO STEPS
+═══════════════════════════════════════════ */
+.combo { display: flex; flex-direction: column; gap: 8px; }
+.combo-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  transition: border-color .15s;
+}
+.combo-step:hover { border-color: var(--coral); }
+.combo-num {
+  width: 28px; height: 28px;
+  background: var(--coral);
+  color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.combo-text strong { color: var(--text); display: block; font-size: 0.88rem; margin-bottom: 2px; }
+.combo-text span   { color: var(--text2); font-size: 0.82rem; }
+
+/* ═══════════════════════════════════════════
+   MAP SECTION
+═══════════════════════════════════════════ */
+.map-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.map-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+.map-section-header span { color: var(--gold); font-weight: 700; font-size: 0.84rem; }
+.map-img-wrap { position: relative; }
+.map-img-wrap img { width: 100%; display: block; filter: brightness(.82) saturate(.7); }
+
+/* Static map labels */
+.map-label {
+  position: absolute;
+  background: rgba(26,21,37,.88);
+  border: 1px solid;
+  border-radius: 5px;
+  padding: 3px 9px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════
+   WHAT NOT TO DO
+═══════════════════════════════════════════ */
+.dont-list { display: flex; flex-direction: column; gap: 8px; }
+.dont-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: rgba(224,82,82,.05);
+  border: 1px solid rgba(224,82,82,.15);
+  border-left: 3px solid var(--red);
+  border-radius: 0 8px 8px 0;
+  padding: 11px 16px;
+  font-size: 0.86rem;
+}
+.dont-item .x { color: var(--red); font-weight: 900; flex-shrink: 0; font-size: 0.9rem; margin-top: 1px; }
+.dont-item span { color: var(--text2); }
+.dont-item span strong { color: var(--text); }
+
+/* ═══════════════════════════════════════════
+   BUFF TABLE — priority highlight
+═══════════════════════════════════════════ */
+.buff-first { background: rgba(255,209,102,.04); }
+.buff-first td:first-child { color: var(--gold) !important; }
+
+/* ═══════════════════════════════════════════
+   PUSH/HOLD TABLE
+═══════════════════════════════════════════ */
+.ph-table td:first-child { color: var(--mint) !important; }
+.ph-table tr:nth-child(odd) td:first-child { color: var(--mint) !important; }
+
+/* ═══════════════════════════════════════════
+   MOBILE
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .toc { display: none; }
+  .hero { padding: 32px 20px 28px; }
+  .hero h1 { font-size: 1.5rem; }
+  .section { padding: 28px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- ════════════════════════════════════════
+     SIDEBAR TOC
+════════════════════════════════════════ -->
+<nav class="toc" id="toc">
+  <div class="toc-brand">⚔ GvG Guide</div>
+  <div class="toc-group">Pre-Match</div>
+  <a href="#checklist">Match Day Checklist</a>
+  <a href="#quick">Win Conditions</a>
+  <a href="#requirements">Requirements</a>
+  <a href="#roles">Roles & Composition</a>
+  <a href="#buffs">Pre-Battle Buffs</a>
+  <div class="toc-group">The Match</div>
+  <a href="#map">Battlefield Map</a>
+  <a href="#timeline">Match Flow</a>
+  <a href="#phases">Phase Guide</a>
+  <div class="toc-group">Combat</div>
+  <a href="#fights">Win Engagements</a>
+  <a href="#donts">What NOT To Do</a>
+  <a href="#counters">Counter Enemy Skills</a>
+  <div class="toc-group">Reference</div>
+  <a href="#bufftable">Commander Buffs</a>
+  <a href="#rank">Rank & Season</a>
+  <a href="#principles">Key Principles</a>
+</nav>
+
+<!-- ════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════ -->
+<main class="content">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Where Winds Meet · Guild vs Guild</div>
+  <h1>Guild War <span>Strategy Guide</span></h1>
+  <p class="hero-sub">Everything your guild needs — from pre-match setup to tree delivery. Read once, execute every Saturday and Sunday.</p>
+  <div class="hero-actions">
+    <a href="strat-builder.html" class="btn-primary">⚔ Open Strategy Builder →</a>
+    <a href="#checklist"         class="btn-secondary">Match Day Checklist ↓</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     MATCH DAY CHECKLIST
+════════════════════════════════════ -->
+<div class="section" id="checklist">
+  <div class="section-label">Before You Queue</div>
+  <div class="section-title">Match Day Checklist</div>
+  <p>Do every item before clicking Ready. Takes 3 minutes. Skipping any of these is a disadvantage before the match even starts.</p>
+
+  <div class="checklist-wrap">
+    <div class="checklist-header">
+      <span id="check-progress-text">0 / 8 complete</span>
+      <button class="reset-btn" onclick="resetChecklist()">Reset</button>
+    </div>
+    <div class="check-progress"><div class="check-progress-fill" id="check-fill" style="width:0%"></div></div>
+
+    <label class="check-item" onclick="updateProgress()">
+      <input type="checkbox" id="c0">
+      <div class="check-box"></div>
+      <div class="check-text"><span class="check-tag tag-buff">BUFF</span>Visit <strong>Song's Bathhouse</strong> (Kaifeng) — grab the endurance buff</div>
+    </label>
+    <label class="check-item" onclick="updateProgress()">
+      <input type="checkbox" id="c1">
+      <div class="check-box"></div>
+      <div class="check-text"><span class="check-tag tag-buff">BUFF</span>Eat <strong>Camel Milk Wine</strong> (Food slot) — +70–140 Physical Attack for 30 min</div>
+    </label>
+    <label class="check-item" onclick="updateProgress()">
+      <input type="checkbox" id="c2">
+      <div class="check-box"></div>
+      <div class="check-text"><span class="check-tag tag-buff">BUFF</span>Use <strong>Heartless Script Lv61</strong> (Scroll slot) — 20% dmg reduction while CC'd</div>
+    </label>
+    <label class="check-item" onclick="updateProgress()">
+      <input type="checkbox" id="c3">
+      <div class="check-box"></div>
+      <div class="check-text"><span class="check-tag tag-buff">BUFF</span>Use <strong>Fragrant Orchid Bath Bean</strong> (Medicine slot) — +Endurance</div>
+    </label>
+    <label class="check-item" onclick="updateProgress()">
+      <input type="checkbox" id="c4">
+      <div class="check-box"></div>
+      <div class="check-text"><span class="check-tag tag-assign">ASSIGN</span>Confirm <strong>Commander</strong> is assigned in Guild Menu → Rank Management</div>
+    </label>
+    <label class="check-item" onclick="updateProgress()">
+      <input type="checkbox" id="c5">
+      <div class="check-box"></div>
+      <div class="check-text"><span class="check-tag tag-assign">ASSIGN</span>Confirm <strong>all 3 Performer (duelist) slots</strong> are filled — if empty, game picks randomly</div>
+    </label>
+    <label class="check-item" onclick="updateProgress()">
+      <input type="checkbox" id="c6">
+      <div class="check-box"></div>
+      <div class="check-text"><span class="check-tag tag-equip">EQUIP</span>Equip your <strong>GvG build</strong> and set <strong>Lion's Roar</strong> as your Mystic Skill</div>
+    </label>
+    <label class="check-item" onclick="updateProgress()">
+      <input type="checkbox" id="c7">
+      <div class="check-box"></div>
+      <div class="check-text"><span class="check-tag tag-assign">WAIT</span><strong>Hold in the Bulwark</strong> — wait for Commander's call before pushing</div>
+    </label>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     QUICK ANSWER + WIN CONDITIONS
+════════════════════════════════ -->
+<div class="section" id="quick">
+  <div class="section-label">The Goal</div>
+  <div class="section-title">How to Win</div>
+
+  <div class="quick-answer">
+    <div class="qa-label">Quick Answer</div>
+    <div class="qa-text">Destroy at least one enemy tower → kill the enemy Goose → carry the Fortune Tree back to your gate. If time expires, whoever moved the tree furthest wins.</div>
+  </div>
+
+  <div class="win-steps">
+    <div class="win-step">
+      <div class="win-num">1</div>
+      <div class="win-text"><strong>Tree delivered</strong> through your gate — instant win</div>
+    </div>
+    <div class="win-step">
+      <div class="win-num">2</div>
+      <div class="win-text"><strong>Time expires</strong> — team that moved tree furthest wins</div>
+    </div>
+    <div class="win-step">
+      <div class="win-num">3</div>
+      <div class="win-text"><strong>Tree tied</strong> — team that destroyed more enemy towers wins</div>
+    </div>
+    <div class="win-step">
+      <div class="win-num">4</div>
+      <div class="win-text"><strong>Towers tied</strong> — team with higher remaining tower HP wins</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     REQUIREMENTS
+════════════════════════════════ -->
+<div class="section" id="requirements">
+  <div class="section-label">Prerequisites</div>
+  <div class="section-title">Requirements</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Requirement</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td>Guild Level</td><td>3+</td></tr>
+        <tr><td>Guild Prosperity</td><td>30,000+</td></tr>
+        <tr><td>Recommended Players</td><td>30 active (20 PC / 10 Mobile)</td></tr>
+        <tr><td>Match Days</td><td>Saturday &amp; Sunday</td></tr>
+        <tr><td>Match Time (NA / Yougu)</td><td>20:30 UTC-5</td></tr>
+        <tr><td>Match Time (EU / Yunya)</td><td>20:30 UTC+1</td></tr>
+        <tr><td>Match Time (Asia / Canglang)</td><td>20:30 UTC+8</td></tr>
+        <tr><td>Match Duration</td><td>35 min max (5 min prep + 30 min combat)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     ROLES
+════════════════════════════════ -->
+<div class="section" id="roles">
+  <div class="section-label">Team Structure</div>
+  <div class="section-title">Roles & Composition</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Role</th><th>Who</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-commander">Commander</span></td>
+          <td>Guild Leader or Deputy</td>
+          <td>Coordinates team, places Bulwarks, spends fun coins — does NOT fight on frontline</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-dps">Performer</span></td>
+          <td>Best 1v1 players (3 slots)</td>
+          <td>Enters the Halftime Duel at 20-min mark — wins grant powerful team buffs</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-tank">Main Force</span></td>
+          <td>20 players — Tanks + Healers + Nameless Swords</td>
+          <td>Hold mid lane, push towers, fight goose</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-flex">Flex Group 1</span></td>
+          <td>5 players — Twin Blade / Strategic Sword</td>
+          <td>Top route — farm mobs for fun coins, harass enemy healers</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-flex">Flex Group 2</span></td>
+          <td>5 players — Twin Blade / Strategic Sword</td>
+          <td>Bot route — farm mobs for fun coins, harass enemy healers</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">Composition Target</div>
+    <p><strong>6–8 Healers</strong> — AoE sustain wins team fights · <strong>4 Tanks</strong> — frontline anchor, CC immunity · <strong>1 Duelist</strong> — Nameless Sword preferred, pre-assigned · <strong>Rest: DPS</strong> — prioritise Nameless Sword and Twin Blade</p>
+  </div>
+
+  <div class="callout callout-critical">
+    <div class="callout-label">Critical</div>
+    <p>Always pre-assign all 3 Performer slots before the match. If any slot is empty and that player is absent, the game auto-picks a random guild member — this could be your healer against their best 1v1 player.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     PRE-BATTLE BUFFS
+════════════════════════════════ -->
+<div class="section" id="buffs">
+  <div class="section-label">Before The Match</div>
+  <div class="section-title">Pre-Battle Buff Loadout</div>
+  <p>All 3 slots are independent — they stack simultaneously. Apply before queueing. They last 30 minutes.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Slot</th><th>Item</th><th>Effect</th><th>Duration</th></tr></thead>
+      <tbody>
+        <tr class="buff-first"><td>Food</td><td>Camel Milk Wine</td><td>+70–140 Physical Attack</td><td>30 min</td></tr>
+        <tr class="buff-first"><td>Scroll</td><td><strong>Heartless Script Lv61</strong></td><td>20% dmg reduction while CC'd — <strong>default for everyone</strong></td><td>30 min</td></tr>
+        <tr class="buff-first"><td>Medicine</td><td>Fragrant Orchid Bath Bean</td><td>+50% reduced jump endurance cost + Max Endurance</td><td>30 min</td></tr>
+        <tr><td>Passive</td><td>Bathhouse Buff</td><td>Endurance buff — separate slot, stacks with all above</td><td>Long</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-guild">
+    <div class="callout-label">Why Heartless Script?</div>
+    <p>CC is constant in 30v30. Being stunned, silenced, or frozen is when you take the most burst damage. 20% reduction during those windows keeps you alive long enough to counterattack. Alternatives only if you have zero CC pressure.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     BATTLEFIELD MAP
+════════════════════════════════ -->
+<div class="section" id="map">
+  <div class="section-label">Visual Reference</div>
+  <div class="section-title">Battlefield Map</div>
+
+  <div class="map-section">
+    <div class="map-section-header">
+      <span>GvG Arena — Oval Stadium Layout</span>
+      <a href="strat-builder.html" class="btn-primary" style="font-size:0.76rem;padding:6px 14px">⚔ Open Strategy Builder →</a>
+    </div>
+    <div class="map-img-wrap">
+      <img src="map_bg.png" alt="GvG Battlefield Map">
+      <!-- Static labels overlaid on the image -->
+      <div class="map-label" style="left:3%;top:42%;border-color:var(--coral);color:var(--coral)">YOUR BASE</div>
+      <div class="map-label" style="right:1%;top:42%;border-color:var(--blue);color:var(--blue)">ENEMY BASE</div>
+      <div class="map-label" style="left:40%;top:48%;border-color:var(--gold);color:var(--gold);transform:translateX(-50%)">FORTUNE TREE</div>
+      <div class="map-label" style="left:50%;top:2%;border-color:var(--mint);color:var(--mint);transform:translateX(-50%)">BOSS CAMP</div>
+      <div class="map-label" style="left:50%;bottom:2%;border-color:var(--mint);color:var(--mint);transform:translateX(-50%)">BOSS CAMP</div>
+    </div>
+  </div>
+
+  <div class="callout callout-guild">
+    <div class="callout-label">Guild Strategy — Hold in the Bulwark</div>
+    <p>Do NOT rush straight out of the gate. Hold at the Bulwark and watch the enemy's first move. Enemy stacks mid heavy → reinforce mid. Enemy spreads thin → Flex Groups match their spread and bully each lane. Once enemy intent is clear — Commander calls the push.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     TIMELINE
+════════════════════════════════ -->
+<div class="section" id="timeline">
+  <div class="section-label">Match Flow</div>
+  <div class="section-title">Match Flow Timeline</div>
+  <p>Timer counts <strong>down</strong> from 30:00 after the 5-minute prep phase ends.</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-time">PRE-MATCH</div>
+      <div class="tl-title">Complete Match Day Checklist</div>
+      <div class="tl-body">All buffs applied, roles assigned, GvG build equipped.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">PREP PHASE — 5 min window</div>
+      <div class="tl-title">Hold in Bulwark · Scout Enemy</div>
+      <div class="tl-body">Read enemy composition. Commander calls the split once intent is clear. Everyone mounts and pushes together.</div>
+    </div>
+    <div class="tl-item tl-event">
+      <div class="tl-time">30:00 → 25:00 REMAINING</div>
+      <div class="tl-title">Early Game — Map Control</div>
+      <div class="tl-body">Main Force → mid. Flex Groups → farm jungle mobs every 5 min. Commander buys <strong>Frontline Zeal first</strong>, then You Got a Problem? (300 coins) when team is grouped at tower.</div>
+    </div>
+    <div class="tl-item tl-boss">
+      <div class="tl-time">◆ 25:00 REMAINING</div>
+      <div class="tl-title">First Miniboss Spawns</div>
+      <div class="tl-body">Contest last hit — huge fun coin reward. Commander calls: <strong>BOSS TOP</strong> or <strong>BOSS BOT</strong>. Send 5 players.</div>
+    </div>
+    <div class="tl-item tl-duel">
+      <div class="tl-time">★ 20:00 REMAINING</div>
+      <div class="tl-title">Halftime Duel — 1v1 Arena</div>
+      <div class="tl-body">Match pauses. Pre-assigned Performer enters. <strong>WIN</strong> → Tower -60% HP (or Goose -20%). <strong>LOSE</strong> → Commander calls <strong>CITY PROT</strong> immediately (1000 coins, 20s immunity). Everyone regroups and heals while duel runs.</div>
+    </div>
+    <div class="tl-item tl-event">
+      <div class="tl-time">20:00 → 15:00 REMAINING</div>
+      <div class="tl-title">Mid Game — Push Goose</div>
+      <div class="tl-body">Commander: <strong>Hair Pulling</strong> (300 coins) — coordinate all EX skills in the 10s window. Keep Flex Groups farming.</div>
+    </div>
+    <div class="tl-item tl-boss">
+      <div class="tl-time">◆ 15:00 REMAINING</div>
+      <div class="tl-title">Second Miniboss Spawns</div>
+      <div class="tl-body">Contest last hit → team-wide buff. Commander calls split for boss.</div>
+    </div>
+    <div class="tl-item tl-event">
+      <div class="tl-time">AFTER GOOSE DIES</div>
+      <div class="tl-title">Late Game — Tree Escort</div>
+      <div class="tl-body">Call: <strong>TREE UP — ESCORT</strong>. Commander: Sprint + Relentless Advance. Surround carrier — spread slightly, don't cluster. Inkwell users deploy windwalls ahead of carrier.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">END</div>
+      <div class="tl-title">Win Condition Check</div>
+      <div class="tl-body">Tree delivered = instant win. Time expires = furthest tree position wins. Tiebreak on towers.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     PHASE GUIDE
+════════════════════════════════ -->
+<div class="section" id="phases">
+  <div class="section-label">Phase by Phase</div>
+  <div class="section-title">Phase Strategy</div>
+
+  <div class="phases">
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-num">1</div>
+        <div>
+          <div class="phase-title">Pre-Match</div>
+          <div class="phase-timing">Before queueing</div>
+          <div class="phase-now">DO THIS NOW: Complete the Match Day Checklist before you queue.</div>
+        </div>
+      </div>
+      <details class="phase-detail">
+        <summary>Full details</summary>
+        <div class="phase-detail-body">
+          <ul>
+            <li>Guild Management → Rank Management → assign Commander + 3 Halftime Performers</li>
+            <li>Distribute points in Technique Marshal Teaching</li>
+            <li>Pair mobile players with PC players across lanes — don't isolate them together</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-num">2</div>
+        <div>
+          <div class="phase-title">Prep Phase</div>
+          <div class="phase-timing">First 5 minutes</div>
+          <div class="phase-now">DO THIS NOW: Hold in the Bulwark. Do not push until Commander calls.</div>
+        </div>
+      </div>
+      <details class="phase-detail">
+        <summary>Full details</summary>
+        <div class="phase-detail-body">
+          <ul>
+            <li>Commander assigns 1–3 players to the Bulwark forward spawn (press 5 to dismount)</li>
+            <li>Mark tanks and healers in the party panel so they're visible in large fights</li>
+            <li>Merge teams, confirm split assignments</li>
+            <li><strong>Hold and read the enemy</strong> — watch their opening movement before committing</li>
+            <li>Enemy stacks mid heavy → reinforce mid with extra DPS</li>
+            <li>Enemy spreads thin → Flex Groups match their spread and bully each lane</li>
+            <li>Commander calls the push → everyone mounts and goes together</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-num">3</div>
+        <div>
+          <div class="phase-title">Early Game — Map Control</div>
+          <div class="phase-timing">30:00 → 25:00 remaining</div>
+          <div class="phase-now">DO THIS NOW: Split into Main Force + Flex Groups. Commander buys Frontline Zeal immediately.</div>
+        </div>
+      </div>
+      <details class="phase-detail">
+        <summary>Full details + Tower Callouts</summary>
+        <div class="phase-detail-body">
+          <ul>
+            <li><strong>Main Force (Mid):</strong> Tanks lead, Healers stay behind tank line, Nameless Swords provide raid shields</li>
+            <li><strong>Flex Groups (Top/Bot):</strong> Twin Blade / Strategic Sword — farm AI mobs, hunt enemy healers</li>
+            <li>Commander priority: <strong>Frontline Zeal first</strong> — costs increase each use but permanently stacks</li>
+            <li>Neutral mobs spawn every 5 minutes — assign 3–5 players to secure each wave</li>
+            <li>When pushing a tower: Commander activates <strong>You Got a Problem?</strong> (300 coins) — wait until team is grouped first</li>
+            <li>Fight near tower structures — AoE hits both enemies AND the tower simultaneously</li>
+          </ul>
+          <br>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Callout</th><th>Meaning</th></tr></thead>
+              <tbody>
+                <tr><td>PUSH MID</td><td>Main Force focuses mid — everyone converge</td></tr>
+                <tr><td>MID T1 / T2 LOW</td><td>Tower is critical HP — dump EX skills now</td></tr>
+                <tr><td>HOLD</td><td>Stop pushing, fall back and regroup</td></tr>
+                <tr><td>BOSS TOP / BOT</td><td>Boss spawning — send 5 players</td></tr>
+                <tr><td>GOOSE</td><td>Enemy goose — everyone converge</td></tr>
+                <tr><td>TREE UP</td><td>Fortune Tree picked up — escort now</td></tr>
+                <tr><td>CITY PROT</td><td>Commander activating City Protection — hold position</td></tr>
+                <tr><td>FALL BACK</td><td>Full retreat to own towers — regroup</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-num">4</div>
+        <div>
+          <div class="phase-title">Halftime Duel</div>
+          <div class="phase-timing">20:00 remaining</div>
+          <div class="phase-now">DO THIS NOW: Regroup and heal during the duel. Commander watches coins.</div>
+        </div>
+      </div>
+      <details class="phase-detail">
+        <summary>Full details</summary>
+        <div class="phase-detail-body">
+          <ul>
+            <li>Match pauses — designated Performer enters 1v1 arena</li>
+            <li><strong>If you WIN:</strong> Enemy tower loses 60% HP (recommended if towers standing) OR Enemy Goose loses 20% HP (if towers down)</li>
+            <li><strong>If you LOSE:</strong> Commander activates City Protection immediately (1000 coins — 20s full immunity) → pull back to own towers → activate Last Stand if team starts dying → weather the enemy's post-duel push</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-header">
+        <div class="phase-num">5</div>
+        <div>
+          <div class="phase-title">Mid/Late Game — Goose → Tree</div>
+          <div class="phase-timing">Post-duel → match end</div>
+          <div class="phase-now">DO THIS NOW: Kill the Goose. Escort the Tree. Don't overextend.</div>
+        </div>
+      </div>
+      <details class="phase-detail">
+        <summary>Full details</summary>
+        <div class="phase-detail-body">
+          <ul>
+            <li>Push enemy Goose with <strong>Hair Pulling</strong> active (300 coins) — coordinate all EX weapon skills in this 10s window</li>
+            <li>Secure the 15-min Miniboss — last hit earns a team-wide buff</li>
+            <li>After Goose dies: one designated player picks up Fortune Tree — call <strong>TREE UP — ESCORT</strong></li>
+            <li>Commander activates <strong>Sprint + Relentless Advance</strong> combo to push tree out of enemy base</li>
+            <li>Escort spread formation: surround carrier — don't cluster — one AoE should not wipe the entire escort</li>
+            <li>Inkwell fan users: deploy windwalls ahead of carrier's path to block interceptors</li>
+            <li>Activate <strong>Desperate Surge</strong> (500 coins) at the start of every major team fight during escort</li>
+            <li>Activate <strong>Last Stand</strong> (1000 coins) in final 5 minutes when respawn timers are long</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     WIN FIGHTS
+════════════════════════════════ -->
+<div class="section" id="fights">
+  <div class="section-label">Combat</div>
+  <div class="section-title">How to Win Fights</div>
+
+  <p>The 6-step combo. If every step lands, the fight ends in seconds.</p>
+
+  <div class="combo">
+    <div class="combo-step">
+      <div class="combo-num">1</div>
+      <div class="combo-text">
+        <strong>Tank Pull</strong>
+        <span>Vacuum/pull ultimate drags enemies into a tight cluster</span>
+      </div>
+    </div>
+    <div class="combo-step">
+      <div class="combo-num">2</div>
+      <div class="combo-text">
+        <strong>Moblade Vacuum</strong>
+        <span>Pulls any remaining scattered enemies into the group</span>
+      </div>
+    </div>
+    <div class="combo-step">
+      <div class="combo-num">3</div>
+      <div class="combo-text">
+        <strong>Inkwell Fanned Wind Box</strong>
+        <span>Traps the cluster, blocks escape routes</span>
+      </div>
+    </div>
+    <div class="combo-step">
+      <div class="combo-num">4</div>
+      <div class="combo-text">
+        <strong>Twin Blade Anti-Heal</strong>
+        <span>Nullify Healing applied to everyone inside the trap</span>
+      </div>
+    </div>
+    <div class="combo-step">
+      <div class="combo-num">5</div>
+      <div class="combo-text">
+        <strong>Lion's Roar</strong>
+        <span>Silences the trapped, heal-blocked group — area silence + damage reduction</span>
+      </div>
+    </div>
+    <div class="combo-step">
+      <div class="combo-num">6</div>
+      <div class="combo-text">
+        <strong>Everyone Bursts</strong>
+        <span>AoE abilities and EX skills into the clustered, silenced, anti-healed group</span>
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <div class="section-title" style="font-size:1rem;margin-bottom:14px">Target Priority</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Priority</th><th>Target</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>1st</td><td><span class="badge badge-healer">Enemy Healers</span></td><td>Their AoE sustain keeps a losing team alive — remove it first</td></tr>
+        <tr><td>2nd</td><td><span class="badge badge-commander">Enemy Commander</span></td><td>No Commander = no buffs for the rest of the match</td></tr>
+        <tr><td>3rd</td><td><span class="badge badge-dps">Enemy Duelist</span></td><td>Eliminate before 20-min duel — their replacement will be weaker</td></tr>
+        <tr><td>4th</td><td>DPS</td><td>Once healers are dead, the rest melts fast</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <br>
+  <div class="section-title" style="font-size:1rem;margin-bottom:14px">When to Push vs Hold</div>
+  <div class="table-wrap">
+    <table class="ph-table">
+      <thead><tr><th>Push when</th><th>Hold when</th></tr></thead>
+      <tbody>
+        <tr><td>Commander buffs are ready</td><td>Team is below 50% HP</td></tr>
+        <tr><td>Team is full HP</td><td>Commander buffs are on cooldown</td></tr>
+        <tr><td>Enemy just respawned</td><td>Your healers are dead</td></tr>
+        <tr><td>You outnumber the enemy</td><td>You're outnumbered</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-tip">
+    <div class="callout-label">After winning a fight</div>
+    <p>Immediately attack the nearest tower or Goose while the enemy respawns. Don't stand around. Always force engagements near enemy towers — every AoE that hits enemies near a tower also chips the tower.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     WHAT NOT TO DO
+════════════════════════════════ -->
+<div class="section" id="donts">
+  <div class="section-label">Common Mistakes</div>
+  <div class="section-title">What NOT To Do</div>
+
+  <p style="margin-bottom:16px;color:var(--muted);font-size:0.84rem">Mistakes That Lose Matches</p>
+  <div class="dont-list">
+    <div class="dont-item"><span class="x">✕</span><span>Do NOT rush straight down mid only — no Flex Groups = no fun coins = Commander has nothing to spend</span></div>
+    <div class="dont-item"><span class="x">✕</span><span>Do NOT split into 3 lanes with fewer than 30 players — you get bullied in every lane; focus mid first</span></div>
+    <div class="dont-item"><span class="x">✕</span><span>Do NOT attack the enemy Goose before at least 1 tower is down — it takes <strong>zero damage</strong> until then</span></div>
+    <div class="dont-item"><span class="x">✕</span><span>Do NOT send an unprepared player into the halftime duel — a healer vs their best 1v1 player ends the match</span></div>
+  </div>
+
+  <br>
+  <p style="margin-bottom:16px;color:var(--muted);font-size:0.84rem">Mistakes That Waste Resources</p>
+  <div class="dont-list">
+    <div class="dont-item"><span class="x">✕</span><span>Do NOT use Refight (2000 coins) before the final decisive push — it's your most expensive card</span></div>
+    <div class="dont-item"><span class="x">✕</span><span>Do NOT activate Hair Pulling unless the whole team is grouped and EX skills are ready — 10s window wasted on 5 people</span></div>
+    <div class="dont-item"><span class="x">✕</span><span>Do NOT try to interrupt Lion's Roar mid-cast — Fortitude blocks all CC; you will waste your stagger on nothing</span></div>
+  </div>
+
+  <br>
+  <p style="margin-bottom:16px;color:var(--muted);font-size:0.84rem">Mistakes That Get People Killed</p>
+  <div class="dont-list">
+    <div class="dont-item"><span class="x">✕</span><span>Do NOT fight away from towers — every AoE near a tower chips the structure for free</span></div>
+    <div class="dont-item"><span class="x">✕</span><span>Do NOT chase kills past the enemy frontline — no healer coverage behind their line = death</span></div>
+    <div class="dont-item"><span class="x">✕</span><span>Do NOT overextend in the final 10 minutes — respawn timers are very long; one bad push loses the game</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     COUNTER SKILLS
+════════════════════════════════ -->
+<div class="section" id="counters">
+  <div class="section-label">Enemy Skills</div>
+  <div class="section-title">Countering Enemy Skills</div>
+
+  <details class="phase-detail" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+    <summary style="padding:14px 20px;font-size:0.88rem">Lion's Roar (The Bell) — Area Silence + Damage Reduction</summary>
+    <div class="phase-detail-body">
+      <div class="callout callout-warning" style="margin:0 0 14px">
+        <div class="callout-label">You cannot interrupt it</div>
+        <p>The caster has Fortitude active — CC attempts do nothing. The Silence only triggers if 5+ of 14 hits land on the same target. Get out of the AoE before hit 5 = no Silence.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Step</th><th>Counter</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><strong>Spread formation</strong> — don't cluster. Lion's Roar is devastating on stacked groups</td></tr>
+            <tr><td>2</td><td><strong>Dodge on bell slam</strong> (cast tell) — roll away before hit 5 lands</td></tr>
+            <tr><td>3</td><td><strong>Use the knockback</strong> — the bell pushes you away, let it launch you out of range</td></tr>
+            <tr><td>4</td><td><strong>Nameless Sword Z-key</strong> — raid shield blocks the Qi damage from the roar</td></tr>
+            <tr><td>5</td><td><strong>Spear Guardian Field</strong> (GvG ultimate) — CC immunity circle for allies inside</td></tr>
+            <tr><td>6</td><td><strong>Note: Cloud Steps</strong> aerial stomp may bypass the Fortitude window — verify in friendly matches</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</div>
+
+<!-- ════════════════════════════════
+     COMMANDER BUFF REFERENCE
+════════════════════════════════ -->
+<div class="section" id="bufftable">
+  <div class="section-label">Reference</div>
+  <div class="section-title">Commander Buff Cheat Sheet</div>
+  <p>The Commander spends Fun Coins on these buffs. Timing is everything — wrong buff at the wrong time wastes coins.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Buff</th><th>Cost</th><th>Effect</th><th>When to Use</th></tr></thead>
+      <tbody>
+        <tr class="buff-first"><td>1</td><td><strong>Frontline Zeal</strong></td><td>↑ each use</td><td>Permanent stacking dmg to towers/goose + tree speed</td><td>Every time available — buy first</td></tr>
+        <tr><td>2</td><td>You Got a Problem?</td><td>300</td><td>+100% tower dmg / 10s</td><td>Team grouped at a tower</td></tr>
+        <tr><td>3</td><td>Hair Pulling</td><td>300</td><td>+100% goose dmg / 10s</td><td>Full team attacking goose + EX skills ready</td></tr>
+        <tr><td>4</td><td>Desperate Surge</td><td>500</td><td>-60% enemy healing / 15s</td><td>Start of every team fight</td></tr>
+        <tr><td>5</td><td>Sprint</td><td>500</td><td>+100% tree carry speed / 10s</td><td>Combo with Relentless Advance</td></tr>
+        <tr><td>6</td><td>Relentless Advance</td><td>—</td><td>Tree ignores interception / 5s</td><td>Pair with Sprint for tree push</td></tr>
+        <tr><td>7</td><td>Last Stand</td><td>1000</td><td>-30% respawn (-60% if 2 towers down) / 1min</td><td>Late game — deaths are costly</td></tr>
+        <tr><td>8</td><td>Bounty Strike</td><td>1000</td><td>+40% dmg to enemy tree carrier / 10s</td><td>Enemy is carrying your Fortune Tree</td></tr>
+        <tr class="buff-first"><td>9</td><td><strong>City Protection</strong></td><td>1000</td><td>Full immunity to towers + goose / 20s</td><td>Enemy wins duel — use immediately</td></tr>
+        <tr><td>10</td><td>Goose Immunity</td><td>1000</td><td>Friendly goose immune / 20s</td><td>Enemy is bursting your Goose</td></tr>
+        <tr><td>11</td><td>Reduce Skill Cooldown</td><td>2000</td><td>-50% EX cooldowns + 10% dmg/heal / 30s</td><td>One decisive moment only</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     RANK
+════════════════════════════════ -->
+<div class="section" id="rank">
+  <div class="section-label">Season</div>
+  <div class="section-title">Rank & Season Structure</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Phase</th><th>Duration</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Preparation Week</td><td>Week 1</td><td>Unranked practice matches — no rank impact</td></tr>
+        <tr><td>Placement Matches</td><td>Weeks 2–3</td><td>2 matches per week (Sat + Sun) — determines starting tier</td></tr>
+        <tr><td>Regular Season</td><td>Weeks 4+</td><td>Weekend matches — wins promote, losses risk relegation</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout callout-tip">
+    <div class="callout-label">Rewards</div>
+    <p>Top tiers promoted at season end. Bottom tiers relegated. Top 10 guilds earn exclusive titles + Echo Jade + Guild Reputation rewards.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     KEY PRINCIPLES
+════════════════════════════════ -->
+<div class="section" id="principles">
+  <div class="section-label">Core Rules</div>
+  <div class="section-title">Key Principles</div>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div class="callout callout-guild" style="margin:0">
+      <div class="callout-label">1 — Coordination beats individual skill</div>
+      <p>Every time. A coordinated average team beats a disorganised great team in 30v30.</p>
+    </div>
+    <div class="callout callout-critical" style="margin:0">
+      <div class="callout-label">2 — Protect your healers</div>
+      <p>If they die, your GvG run is effectively over. Target priority 1 is enemy healers — they know yours are priority too.</p>
+    </div>
+    <div class="callout callout-warning" style="margin:0">
+      <div class="callout-label">3 — Commander buffs flip fights</div>
+      <p>Timing is everything. Hair Pulling at the wrong moment wastes 300 coins and potentially the match.</p>
+    </div>
+    <div class="callout callout-tip" style="margin:0">
+      <div class="callout-label">4 — Use friendly matches</div>
+      <p>Unlimited friendly matches exist. Use them to drill the team fight combo, practice roles, and test the callout system before ranked Saturdays.</p>
+    </div>
+  </div>
+
+  <br>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a href="strat-builder.html" class="btn-primary">⚔ Open Strategy Builder →</a>
+    <a href="#checklist" class="btn-secondary">↑ Back to Checklist</a>
+  </div>
+</div>
+
+</main>
+</div><!-- /layout -->
+
+<script>
+// ── Checklist ────────────────────────────────────────
+const NUM_CHECKS = 8;
+
+function updateProgress() {
+  // setTimeout so the checkbox state updates first
+  setTimeout(() => {
+    let done = 0;
+    for (let i=0; i<NUM_CHECKS; i++) {
+      if (document.getElementById('c'+i)?.checked) done++;
+    }
+    document.getElementById('check-progress-text').textContent = `${done} / ${NUM_CHECKS} complete`;
+    document.getElementById('check-fill').style.width = (done/NUM_CHECKS*100)+'%';
+    saveChecklist();
+  }, 0);
+}
+
+function saveChecklist() {
+  const state = [];
+  for (let i=0; i<NUM_CHECKS; i++) {
+    state.push(document.getElementById('c'+i)?.checked ? 1 : 0);
+  }
+  try { localStorage.setItem('gvg-checklist', JSON.stringify(state)); } catch{}
+}
+
+function loadChecklist() {
+  try {
+    const state = JSON.parse(localStorage.getItem('gvg-checklist') || '[]');
+    state.forEach((v,i) => {
+      const el = document.getElementById('c'+i);
+      if (el && v) el.checked = true;
+    });
+    updateProgress();
+  } catch{}
+}
+
+function resetChecklist() {
+  for (let i=0; i<NUM_CHECKS; i++) {
+    const el = document.getElementById('c'+i);
+    if (el) el.checked = false;
+  }
+  updateProgress();
+}
+
+// ── Active TOC link on scroll ─────────────────────────
+const sections  = document.querySelectorAll('.section[id], .hero');
+const tocLinks  = document.querySelectorAll('.toc a');
+
+function onScroll() {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 80) current = s.id || '';
+  });
+  tocLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#'+current);
+  });
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+
+// ── Init ──────────────────────────────────────────────
+loadChecklist();
+onScroll();
+</script>
+</body>
+</html>

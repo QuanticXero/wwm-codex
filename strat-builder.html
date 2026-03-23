@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GvG Strategy Builder — Where Winds Meet</title>
+<style>
+:root {
+  --bg:     #1a1525;
+  --bg2:    #221d30;
+  --bg3:    #2d2540;
+  --gold:   #ffd166;
+  --coral:  #ff8a65;
+  --mint:   #06d6a0;
+  --red:    #e05252;
+  --text:   #f5f0ff;
+  --muted:  #7b6fa0;
+  --border: #3d3558;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  color: var(--text);
+  overflow: hidden; /* full-page layout — no scroll */
+}
+
+/* ── Full-page layout ───────────────────────────── */
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 0;
+}
+
+/* ── Top bar ─────────────────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.brand {
+  color: var(--gold);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-right: 6px;
+  white-space: nowrap;
+}
+
+.vsep { width: 1px; height: 28px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
+
+.tool {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s, transform .1s;
+  user-select: none;
+}
+.tool:hover  { background: #38304e; transform: translateY(-1px); }
+.tool.active { border-color: var(--gold); background: rgba(255,209,102,.13); color: var(--gold); }
+.tool.active.is-del { border-color: var(--red); background: rgba(224,82,82,.12); color: var(--red); }
+.tool-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+/* Arrow color swatches */
+.arr-colors {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.arr-colors.show { display: flex; }
+.cswatch {
+  width: 15px; height: 15px; border-radius: 50%; cursor: pointer;
+  border: 2px solid transparent; transition: border-color .15s, transform .12s;
+}
+.cswatch:hover { transform: scale(1.25); }
+.cswatch.sel   { border-color: #fff; }
+
+/* Hint pill */
+.hint {
+  font-size: 0.74rem;
+  color: var(--muted);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  margin-left: auto;
+  white-space: nowrap;
+  transition: color .2s, border-color .2s;
+}
+.hint.on { color: var(--gold); border-color: rgba(255,209,102,.4); }
+
+/* ── Map — fills remaining space ─────────────────── */
+.map-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #0d0a14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Image fills as much of the map-wrap as possible */
+.map-bg {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  /* stretch to fill fully */
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* SVG sits over the image exactly */
+.map-svg {
+  position: absolute;
+}
+
+/* Cursor modes */
+.map-svg.cur-default   { cursor: default; }
+.map-svg.cur-cross     { cursor: crosshair; }
+.map-svg.cur-nodrop    { cursor: not-allowed; }
+
+/* X delete button on each marker */
+.del-x            { opacity: 0; pointer-events: none; transition: opacity .15s; }
+[data-eid]:hover .del-x { opacity: 1; pointer-events: all; cursor: pointer; }
+.del-x:hover circle { fill: #ff3030 !important; }
+
+/* ── Bottom bar ──────────────────────────────────── */
+.botbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 9px 16px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 10;
+}
+.botbar input {
+  flex: 1;
+  min-width: 120px;
+  max-width: 200px;
+  padding: 6px 11px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.79rem;
+  outline: none;
+}
+.botbar input:focus { border-color: var(--gold); }
+.botbar select {
+  padding: 6px 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.79rem;
+  cursor: pointer;
+  outline: none;
+  max-width: 170px;
+}
+.btn {
+  padding: 6px 13px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s;
+  user-select: none;
+}
+.btn:hover   { background: #38304e; }
+.btn.gold    { border-color: var(--gold); background: rgba(255,209,102,.1); color: var(--gold); }
+.btn.gold:hover { background: rgba(255,209,102,.2); }
+.btn.danger  { border-color: var(--red); background: rgba(224,82,82,.08); color: var(--red); }
+.btn.danger:hover { background: rgba(224,82,82,.18); }
+
+/* ── Toast ──────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--bg3);
+  border: 1px solid var(--mint);
+  color: var(--mint);
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: transform .28s ease;
+  z-index: 999;
+  pointer-events: none;
+  white-space: nowrap;
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <span class="brand">⚔ Strat Builder</span>
+    <div class="vsep"></div>
+
+    <button class="tool" id="t-select" onclick="setMode('select')">↖ Move</button>
+    <div class="vsep"></div>
+    <button class="tool" id="t-group"  onclick="setMode('group')">
+      <span class="tool-dot" style="background:#ff8a65"></span>Main Force
+    </button>
+    <button class="tool" id="t-flex"   onclick="setMode('flex')">
+      <span class="tool-dot" style="background:#06d6a0"></span>Flex
+    </button>
+    <button class="tool" id="t-target" onclick="setMode('target')">
+      <span style="color:#e05252;font-weight:900;font-size:.95rem">✕</span>Target
+    </button>
+    <button class="tool" id="t-arrow"  onclick="setMode('arrow')">
+      <span style="color:#ffd166">→</span>Arrow
+    </button>
+    <div class="arr-colors" id="arr-colors">
+      <span style="color:var(--muted);font-size:.7rem">Color:</span>
+      <div class="cswatch sel" style="background:#ffd166" onclick="setAC('#ffd166',this)"></div>
+      <div class="cswatch"    style="background:#ff8a65" onclick="setAC('#ff8a65',this)"></div>
+      <div class="cswatch"    style="background:#06d6a0" onclick="setAC('#06d6a0',this)"></div>
+      <div class="cswatch"    style="background:#e05252" onclick="setAC('#e05252',this)"></div>
+    </div>
+    <button class="tool" id="t-label"  onclick="setMode('label')">
+      <span style="color:#ffd166;font-weight:900">T</span>Label
+    </button>
+    <div class="vsep"></div>
+    <button class="tool" id="t-delete" onclick="setMode('delete')">🗑 Delete</button>
+    <button class="tool" onclick="undo()" title="Ctrl+Z">↩ Undo</button>
+
+    <span class="hint" id="hint">Pick a tool, then click the map</span>
+  </div>
+
+  <!-- Map — fills the page -->
+  <div class="map-wrap" id="map-wrap">
+    <img id="map-img" src="map_bg.png" class="map-bg" alt="GvG Map" draggable="false">
+    <svg id="svg" class="map-svg cur-default" xmlns="http://www.w3.org/2000/svg"
+         preserveAspectRatio="none">
+      <defs>
+        <marker id="ah-gold"  markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#ffd166" opacity=".9"/></marker>
+        <marker id="ah-coral" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#ff8a65" opacity=".9"/></marker>
+        <marker id="ah-mint"  markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#06d6a0" opacity=".9"/></marker>
+        <marker id="ah-red"   markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#e05252" opacity=".9"/></marker>
+      </defs>
+      <g id="layer"></g>
+    </svg>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="botbar">
+    <input type="text" id="sname" placeholder="Strategy name…" value="Strat A">
+    <button class="btn gold"   onclick="saveStrat()">💾 Save</button>
+    <select id="loadsel" onchange="loadStrat(this.value)">
+      <option value="">Load saved strat…</option>
+    </select>
+    <button class="btn danger" onclick="deleteStrat()" title="Delete strat">🗑</button>
+    <div class="vsep"></div>
+    <button class="btn gold"   onclick="shareStrat()">🔗 Copy Share Link</button>
+    <button class="btn danger" onclick="clearMap()">Clear Map</button>
+  </div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════
+let elements   = [];
+let nextId     = 1;
+let mode       = 'select';
+let arrowColor = '#ffd166';
+let history    = [];
+
+let drawingArrow = false;
+let arrowPt1     = null;
+let arrowPreview = null;
+let drag         = null; // { id, ox, oy }
+
+// ViewBox dimensions — updated once image loads
+let VBW = 1030, VBH = 607;
+
+// ════════════════════════════════════════════════
+//  IMAGE → set SVG to sit exactly over it
+// ════════════════════════════════════════════════
+const mapImg = document.getElementById('map-img');
+const svgEl  = document.getElementById('svg');
+
+function syncSVG() {
+  const r = mapImg.getBoundingClientRect();
+  svgEl.style.left   = r.left   + 'px';
+  svgEl.style.top    = r.top    + 'px';
+  svgEl.style.width  = r.width  + 'px';
+  svgEl.style.height = r.height + 'px';
+  VBW = mapImg.naturalWidth  || 1030;
+  VBH = mapImg.naturalHeight || 607;
+  svgEl.setAttribute('viewBox', `0 0 ${VBW} ${VBH}`);
+}
+
+mapImg.addEventListener('load', syncSVG);
+if (mapImg.complete) syncSVG();
+window.addEventListener('resize', syncSVG);
+
+// ════════════════════════════════════════════════
+//  COORDINATE CONVERSION
+// ════════════════════════════════════════════════
+function toSVG(cx, cy) {
+  const r = svgEl.getBoundingClientRect();
+  return {
+    x: (cx - r.left) * (VBW / r.width),
+    y: (cy - r.top)  * (VBH / r.height),
+  };
+}
+
+// ════════════════════════════════════════════════
+//  MODE
+// ════════════════════════════════════════════════
+const HINTS = {
+  select: '↖ Drag any marker to reposition · Double-click to rename',
+  group:  'Click the map to place a Main Force marker',
+  flex:   'Click the map to place a Flex Group marker',
+  target: 'Click the map to mark an enemy target',
+  arrow:  'Click & drag on the map to draw an arrow',
+  label:  'Click the map to add a text label',
+  delete: '🗑 Click any marker to delete it · Esc to cancel',
+};
+
+function setMode(m) {
+  mode = m;
+  drawingArrow = false; arrowPreview = null;
+  document.querySelectorAll('.tool').forEach(b => b.classList.remove('active','is-del'));
+  const btn = document.getElementById('t-' + m);
+  if (btn) { btn.classList.add('active'); if (m==='delete') btn.classList.add('is-del'); }
+  const hint = document.getElementById('hint');
+  hint.textContent = HINTS[m] || '';
+  hint.classList.toggle('on', m !== 'select');
+  svgEl.className = 'map-svg ' + (m==='select' ? 'cur-default' : m==='delete' ? 'cur-nodrop' : 'cur-cross');
+  document.getElementById('arr-colors').classList.toggle('show', m==='arrow');
+  render();
+}
+
+function setAC(c, el) {
+  arrowColor = c;
+  document.querySelectorAll('.cswatch').forEach(s => s.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+// ════════════════════════════════════════════════
+//  ELEMENTS
+// ════════════════════════════════════════════════
+function add(el)   { snap(); elements.push({ id: nextId++, ...el }); render(); }
+function remove(id){ snap(); elements = elements.filter(e => e.id !== id); render(); }
+
+// ════════════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════════════
+function render() {
+  const layer = document.getElementById('layer');
+  let h = elements.map(draw).join('');
+
+  if (arrowPreview) {
+    const { x1,y1,x2,y2 } = arrowPreview;
+    const len = Math.hypot(x2-x1, y2-y1);
+    if (len > 8) {
+      const dx=(x2-x1)/len, dy=(y2-y1)/len;
+      h += `<line x1="${x1}" y1="${y1}" x2="${x2-dx*11}" y2="${y2-dy*11}"
+              stroke="${arrowColor}" stroke-width="2.5" stroke-linecap="round"
+              stroke-dasharray="10 5" marker-end="url(#${mid(arrowColor)})" opacity=".5"
+              pointer-events="none"/>`;
+    }
+  }
+  layer.innerHTML = h;
+
+  layer.querySelectorAll('[data-eid]').forEach(el => {
+    el.addEventListener('mousedown', onElDown, { passive: false });
+    el.addEventListener('touchstart', onElTouch, { passive: false });
+  });
+  layer.querySelectorAll('[data-del]').forEach(btn => {
+    btn.addEventListener('click',     e => { e.stopPropagation(); remove(+btn.dataset.del); });
+    btn.addEventListener('mousedown', e => e.stopPropagation());
+  });
+}
+
+function mid(c) {
+  return c==='#ff8a65'?'ah-coral':c==='#06d6a0'?'ah-mint':c==='#e05252'?'ah-red':'ah-gold';
+}
+
+function xBtn(id, cx, cy) {
+  return `<g class="del-x" data-del="${id}" transform="translate(${cx},${cy})">
+    <circle r="9" fill="#e05252" stroke="#1a1525" stroke-width="1.5"/>
+    <text y="4" text-anchor="middle" fill="white" font-size="12" font-weight="900"
+          font-family="system-ui" pointer-events="none">×</text>
+  </g>`;
+}
+
+function draw(e) {
+  const { id, type, x, y, x2, y2, text, color } = e;
+  const mv = `cursor:${mode==='delete'?'not-allowed':'move'}`;
+
+  if (type === 'group' || type === 'flex') {
+    const c   = type==='group' ? '#ff8a65' : '#06d6a0';
+    const r   = type==='group' ? 26 : 20;
+    const lbl = text || (type==='group' ? 'Main Force' : 'Flex');
+    return `<g data-eid="${id}" transform="translate(${x},${y})" style="${mv}">
+      <circle r="${r+9}" fill="${c}12" stroke="${c}" stroke-width="1.8" opacity=".6"/>
+      <circle r="${r}"   fill="${c}28" stroke="${c}" stroke-width="2.5"/>
+      <circle r="${r*.5}"fill="${c}"   opacity=".95"/>
+      <text y="${r+18}" text-anchor="middle" fill="${c}" font-size="12" font-weight="800"
+            font-family="system-ui" style="text-shadow:0 1px 6px #000">${lbl}</text>
+      ${xBtn(id, r+10, -(r+10))}
+    </g>`;
+  }
+
+  if (type === 'target') {
+    const c   = color || '#e05252';
+    const s   = 16;
+    const lbl = text || 'TARGET';
+    return `<g data-eid="${id}" transform="translate(${x},${y})" style="${mv}">
+      <circle r="${s+9}" fill="${c}12" stroke="${c}" stroke-width="1.8" opacity=".6"/>
+      <circle r="${s+2}" fill="${c}28"/>
+      <line x1="${-s}" y1="${-s}" x2="${s}" y2="${s}" stroke="${c}" stroke-width="4" stroke-linecap="round"/>
+      <line x1="${s}"  y1="${-s}" x2="${-s}" y2="${s}" stroke="${c}" stroke-width="4" stroke-linecap="round"/>
+      <text y="${s+19}" text-anchor="middle" fill="${c}" font-size="12" font-weight="800"
+            font-family="system-ui" style="text-shadow:0 1px 6px #000">${lbl}</text>
+      ${xBtn(id, s+10, -(s+10))}
+    </g>`;
+  }
+
+  if (type === 'arrow') {
+    const c   = color || '#ffd166';
+    const len = Math.hypot((x2||0)-x, (y2||0)-y);
+    if (len < 5) return '';
+    const dx=(x2-x)/len, dy=(y2-y)/len;
+    const mx=(x+x2)/2, my=(y+y2)/2;
+    return `<g data-eid="${id}" style="${mv}">
+      <line x1="${x}" y1="${y}" x2="${x2-dx*12}" y2="${y2-dy*12}"
+            stroke="${c}" stroke-width="3.5" stroke-linecap="round" opacity=".88"
+            marker-end="url(#${mid(c)})"/>
+      <circle cx="${mx}" cy="${my}" r="14" fill="transparent"/>
+      ${xBtn(id, mx+16, my-16)}
+    </g>`;
+  }
+
+  if (type === 'label') {
+    const c   = color || '#ffd166';
+    const lbl = text || 'Label';
+    const w   = lbl.length * 7.8 + 18;
+    return `<g data-eid="${id}" transform="translate(${x},${y})" style="${mv}">
+      <rect x="${-w/2}" y="-14" width="${w}" height="23" rx="5"
+            fill="rgba(26,21,37,.85)" stroke="${c}" stroke-width="1.5"/>
+      <text y="4" text-anchor="middle" fill="${c}" font-size="13" font-weight="700"
+            font-family="system-ui" style="text-shadow:0 1px 4px #000">${lbl}</text>
+      ${xBtn(id, w/2+6, -18)}
+    </g>`;
+  }
+  return '';
+}
+
+// ════════════════════════════════════════════════
+//  SVG EVENTS
+// ════════════════════════════════════════════════
+svgEl.addEventListener('mousedown', e => {
+  if (e.target.closest('[data-del]')) return;
+  const el = e.target.closest('[data-eid]');
+
+  // Arrow — start draw
+  if (mode === 'arrow') {
+    const pt = toSVG(e.clientX, e.clientY);
+    drawingArrow = true; arrowPt1 = pt;
+    arrowPreview = { x1:pt.x, y1:pt.y, x2:pt.x, y2:pt.y };
+    e.preventDefault(); return;
+  }
+
+  // Delete
+  if (mode === 'delete' && el) { remove(+el.dataset.eid); return; }
+
+  // Place on background
+  if (el || mode==='select' || mode==='delete') return;
+  const pt = toSVG(e.clientX, e.clientY);
+  if (mode==='group')  { add({ type:'group',  x:pt.x, y:pt.y, text:'Main Force' }); return; }
+  if (mode==='flex')   { add({ type:'flex',   x:pt.x, y:pt.y, text:'Flex' });       return; }
+  if (mode==='target') { add({ type:'target', x:pt.x, y:pt.y, text:'TARGET' });     return; }
+  if (mode==='label') {
+    const t = prompt('Label text:');
+    if (t && t.trim()) add({ type:'label', x:pt.x, y:pt.y, text:t.trim() });
+  }
+});
+
+// Element drag start
+function onElDown(e) {
+  if (e.target.closest('[data-del]')) return;
+  if (mode !== 'select') return;
+  const eid = +e.currentTarget.dataset.eid;
+  const el  = elements.find(v => v.id===eid);
+  const pt  = toSVG(e.clientX, e.clientY);
+  drag = { id:eid, ox:pt.x-el.x, oy:pt.y-el.y };
+  snap();
+  e.preventDefault(); e.stopPropagation();
+}
+
+// Double-click rename
+svgEl.addEventListener('dblclick', e => {
+  if (mode !== 'select') return;
+  const el = e.target.closest('[data-eid]');
+  if (!el) return;
+  const id  = +el.dataset.eid;
+  const obj = elements.find(v => v.id===id);
+  if (!obj || obj.type==='arrow') return;
+  const t = prompt('Rename:', obj.text||'');
+  if (t !== null) { snap(); obj.text = t.trim()||obj.text; render(); }
+});
+
+// Global mouse — drag & arrow follow mouse outside SVG
+window.addEventListener('mousemove', e => {
+  if (drawingArrow && arrowPreview) {
+    const pt = toSVG(e.clientX, e.clientY);
+    arrowPreview.x2 = pt.x; arrowPreview.y2 = pt.y;
+    render(); return;
+  }
+  if (drag) {
+    const pt = toSVG(e.clientX, e.clientY);
+    const el = elements.find(v => v.id===drag.id);
+    if (el) {
+      const nx=pt.x-drag.ox, ny=pt.y-drag.oy;
+      if (el.type==='arrow') { el.x2+=nx-el.x; el.y2+=ny-el.y; }
+      el.x=nx; el.y=ny;
+      render();
+    }
+  }
+});
+
+window.addEventListener('mouseup', e => {
+  if (drawingArrow) {
+    const pt = toSVG(e.clientX, e.clientY);
+    if (Math.hypot(pt.x-arrowPt1.x, pt.y-arrowPt1.y) > 12)
+      add({ type:'arrow', x:arrowPt1.x, y:arrowPt1.y, x2:pt.x, y2:pt.y, color:arrowColor });
+    drawingArrow=false; arrowPreview=null; render();
+  }
+  drag = null;
+});
+
+// Touch
+function onElTouch(e) {
+  if (mode !== 'select') return;
+  const touch = e.touches[0];
+  const eid   = +e.currentTarget.dataset.eid;
+  const el    = elements.find(v => v.id===eid);
+  const pt    = toSVG(touch.clientX, touch.clientY);
+  drag = { id:eid, ox:pt.x-el.x, oy:pt.y-el.y };
+  snap(); e.preventDefault();
+}
+window.addEventListener('touchmove', e => {
+  if (!drag) return;
+  const touch=e.touches[0], pt=toSVG(touch.clientX,touch.clientY);
+  const el=elements.find(v=>v.id===drag.id);
+  if (el) {
+    const nx=pt.x-drag.ox, ny=pt.y-drag.oy;
+    if (el.type==='arrow'){el.x2+=nx-el.x;el.y2+=ny-el.y;}
+    el.x=nx; el.y=ny; render();
+  }
+  e.preventDefault();
+},{passive:false});
+window.addEventListener('touchend',()=>{drag=null;});
+
+// ════════════════════════════════════════════════
+//  UNDO
+// ════════════════════════════════════════════════
+function snap() {
+  history.push(JSON.stringify({elements,nextId}));
+  if (history.length>40) history.shift();
+}
+function undo() {
+  if (!history.length){toast('Nothing to undo');return;}
+  const p=JSON.parse(history.pop()); elements=p.elements; nextId=p.nextId; render();
+}
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo();}
+  if (e.key==='Escape') setMode('select');
+});
+
+// ════════════════════════════════════════════════
+//  SAVE / LOAD
+// ════════════════════════════════════════════════
+const SK = 'gvg-strats';
+function getS()   { return JSON.parse(localStorage.getItem(SK)||'{}'); }
+function putS(s)  { localStorage.setItem(SK,JSON.stringify(s)); }
+
+function saveStrat() {
+  const name=document.getElementById('sname').value.trim();
+  if (!name){toast('Enter a strategy name first');return;}
+  const s=getS(); s[name]={elements,nextId}; putS(s);
+  rebuildSel(name); toast(`✓ Saved "${name}"`);
+}
+function loadStrat(name) {
+  if (!name) return;
+  const d=getS()[name]; if (!d) return;
+  snap(); elements=d.elements; nextId=d.nextId||nextId;
+  document.getElementById('sname').value=name;
+  render(); toast(`Loaded "${name}"`);
+}
+function deleteStrat() {
+  const name=document.getElementById('sname').value.trim();
+  const s=getS(); if (!s[name]){toast('No saved strat with that name');return;}
+  if (!confirm(`Delete "${name}"?`)) return;
+  delete s[name]; putS(s); rebuildSel(''); toast(`Deleted "${name}"`);
+}
+function rebuildSel(sel) {
+  const el=document.getElementById('loadsel'), s=getS();
+  el.innerHTML='<option value="">Load saved strat…</option>'+
+    Object.keys(s).map(k=>`<option value="${k}"${k===sel?' selected':''}>${k}</option>`).join('');
+}
+
+// ════════════════════════════════════════════════
+//  SHARE
+// ════════════════════════════════════════════════
+function shareStrat() {
+  const enc=btoa(encodeURIComponent(JSON.stringify({elements,nextId})));
+  const url=location.href.split('#')[0]+'#'+enc;
+  navigator.clipboard.writeText(url)
+    .then(()=>toast('🔗 Link copied — paste in Discord!'))
+    .catch(()=>prompt('Copy this link:',url));
+}
+function loadHash() {
+  const h=location.hash.slice(1); if (!h) return;
+  try{const d=JSON.parse(decodeURIComponent(atob(h)));elements=d.elements||[];nextId=d.nextId||1;render();toast('Strat loaded from link!');}catch{}
+}
+
+// ════════════════════════════════════════════════
+//  CLEAR
+// ════════════════════════════════════════════════
+function clearMap() {
+  if (!elements.length) return;
+  if (!confirm('Clear everything?')) return;
+  snap(); elements=[]; render();
+}
+
+// ════════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════════
+let _tt;
+function toast(msg) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2600);
+}
+
+// ════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════
+setMode('select');
+rebuildSel('');
+loadHash();
+render();
+</script>
+</body>
+</html>
